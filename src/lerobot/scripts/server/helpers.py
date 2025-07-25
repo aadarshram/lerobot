@@ -312,7 +312,7 @@ def send_bytes_in_chunks(
     silent: bool = True,
     chunk_size: int = 3 * 1024 * 1024,
 ):
-    # NOTE(fracapuano): Partially copied from lerobot.common.transport.utils.send_bytes_in_chunks. Duplication can't be avoided if we
+    # NOTE(fracapuano): Partially copied from lerobot.transport.utils.send_bytes_in_chunks. Duplication can't be avoided if we
     # don't use a unique class for messages sent (due to the different transfer states sent). Also, I'd want more control over the
     # chunk size as I am using it to send image observations.
     buffer = io.BytesIO(buffer)
@@ -345,7 +345,7 @@ def send_bytes_in_chunks(
 def receive_bytes_in_chunks(
     iterator, continue_receiving: Event, logger: logging.Logger, log_prefix: str = ""
 ):  # type: ignore
-    # NOTE(fracapuano): Partially copied from lerobot.common.transport.utils.receive_bytes_in_chunks. Duplication can't be avoided if we
+    # NOTE(fracapuano): Partially copied from lerobot.transport.utils.receive_bytes_in_chunks. Duplication can't be avoided if we
     # don't use a unique class for messages sent (due to the different transfer states sent). Also, on the server side the logic for receiving
     # is opposite then the HIL-SERL design (my event showcases keeping on running instead of shutdown)
     bytes_buffer = io.BytesIO()

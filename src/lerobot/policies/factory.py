@@ -18,13 +18,13 @@ import logging
 
 from torch import nn
 
-from lerobot.configs.policies import PreTrainedConfig
-from lerobot.configs.types import FeatureType
 from lerobot.datasets.lerobot_dataset import LeRobotDatasetMetadata
 from lerobot.datasets.utils import dataset_to_policy_features
 from lerobot.envs.configs import EnvConfig
 from lerobot.envs.utils import env_to_policy_features
 from lerobot.policies.act.configuration_act import ACTConfig
+from lerobot.policies.act.configuration_act_lang import ACTLangConfig 
+from lerobot.policies.act.configuration_act_ni import ACTLangNIConfig
 from lerobot.policies.diffusion.configuration_diffusion import DiffusionConfig
 from lerobot.policies.pi0.configuration_pi0 import PI0Config
 from lerobot.policies.pi0fast.configuration_pi0fast import PI0FASTConfig
@@ -34,6 +34,8 @@ from lerobot.policies.sac.reward_model.configuration_classifier import RewardCla
 from lerobot.policies.smolvla.configuration_smolvla import SmolVLAConfig
 from lerobot.policies.tdmpc.configuration_tdmpc import TDMPCConfig
 from lerobot.policies.vqbet.configuration_vqbet import VQBeTConfig
+from lerobot.configs.policies import PreTrainedConfig
+from lerobot.configs.types import FeatureType
 
 
 def get_policy_class(name: str) -> PreTrainedPolicy:
@@ -50,6 +52,17 @@ def get_policy_class(name: str) -> PreTrainedPolicy:
         from lerobot.policies.act.modeling_act import ACTPolicy
 
         return ACTPolicy
+    
+    elif name == "act_lang":
+        from lerobot.policies.act.modeling_act_lang import ACTLangPolicy
+
+        return ACTLangPolicy
+    
+    elif name == "act_lang_ni":
+        from lerobot.policies.act.modeling_act_ni import ACTLangNIPolicy
+
+        return ACTLangNIPolicy
+
     elif name == "vqbet":
         from lerobot.policies.vqbet.modeling_vqbet import VQBeTPolicy
 
@@ -85,6 +98,10 @@ def make_policy_config(policy_type: str, **kwargs) -> PreTrainedConfig:
         return DiffusionConfig(**kwargs)
     elif policy_type == "act":
         return ACTConfig(**kwargs)
+    elif policy_type == "act_lang":
+        return ACTLangConfig(**kwargs)
+    elif policy_type == "act_lang_ni":
+        return ACTLangNIConfig(**kwargs)
     elif policy_type == "vqbet":
         return VQBeTConfig(**kwargs)
     elif policy_type == "pi0":

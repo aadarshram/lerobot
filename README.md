@@ -1,3 +1,51 @@
+# **LeX-O: A Robot Arm That Plays Tic-Tac-Toe**
+
+## 🛠️ Project Summary
+
+* Built as part of the **48-hour LeRobot Worldwide Hackathon**.
+* **Team:** Aadarsh Ram, Ayush Sharan, Dhruv Dange.
+* Developed on top of the **LeRobot** codebase.
+* Combines:
+
+  * A **rule-based / LLM-based solver** to select the next move.
+  * An **Action Chunking Transformer (ACT)** for executing pick-and-place actions.
+
+## 🤖 Technical Details
+
+* Trained a **task-conditioned ACT model** for all 9 grid positions (each as a separate task).
+* Integrated **Ville Kuosmanen’s interpretability tool** ([GitHub link](https://github.com/villekuosmanen/physical-AI-interpretability)) to analyze model attention across modalities.
+
+### 🎯 Key Observations
+
+* **Joint state receives \~100% attention** in many cases:
+
+  * Suggests that the model has learned a near-direct mapping from joint configuration to action.
+* **Task instruction consistently receives >50% attention**:
+
+  * Indicates that **task conditioning is crucial** to correctly identify the target cell in the Tic-Tac-Toe grid.
+* **Vision input receives low attention**:
+
+  * Likely due to:
+
+    1. The simplicity of the task — the model doesn’t *need* vision to succeed.
+    2. Limited training data — lacking diverse board configurations and pick/place variations to learn from vision.
+
+🔍 **Visualizations:**
+See interpretability results and attention maps here:
+[📂 Google Drive Folder](https://drive.google.com/drive/folders/13-dbozq1eZ0s-TM7vnrvDSsFVYyoNszS?usp=sharing)  
+*A detailed blog post is in progress.*
+
+## 🧩 Code Contributions
+
+* Modified ACT to accept a **task instruction token** as input.
+* Integrated Ville’s interpretability tool into the LeRobot codebase.
+* Extended the tool to also **visualize task attention**, in addition to joint state and vision inputs.
+* **TODO:** Currently, task instruction is a required input. Next step is to make this input modular and optional.
+
+## 🚀 Next Steps
+
+* Train on **more diverse and randomized board configurations** to improve generalization and encourage use of visual input.
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="media/lerobot-logo-thumbnail.png">

@@ -13,7 +13,7 @@
 # limitations under the License.
 """Unit-tests for the `RobotClient` action-queue logic (pure Python, no gRPC).
 
-We monkey-patch `lerobot.common.robot_devices.robots.utils.make_robot` so that
+We monkey-patch `lerobot.robot_devices.robots.utils.make_robot` so that
 no real hardware is accessed. Only the queue-update mechanism is verified.
 """
 
