@@ -13,6 +13,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+'''
+lerobot-train \
+  --dataset.repo_id=aadarshram/pick_place_tape \
+  --policy.type=act \
+  --output_dir=outputs/train/act_pick_place_tape \
+  --job_name=act_pick_place_tape \
+  --policy.device=cuda \
+  --wandb.enable=true \
+  --policy.repo_id=aadarshram/act_pick_place_tape
+'''
 import logging
 import time
 from contextlib import nullcontext

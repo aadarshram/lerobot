@@ -20,7 +20,7 @@ Example:
 ```shell
 lerobot-calibrate \
     --teleop.type=so100_leader \
-    --teleop.port=/dev/tty.usbmodem58760431551 \
+    --teleop.port=/dev/tty.ACM0 \
     --teleop.id=blue
 ```
 """

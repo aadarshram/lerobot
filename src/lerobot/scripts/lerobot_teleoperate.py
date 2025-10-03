@@ -19,12 +19,12 @@ Example:
 
 ```shell
 lerobot-teleoperate \
-    --robot.type=so101_follower \
-    --robot.port=/dev/tty.usbmodem58760431541 \
-    --robot.cameras="{ front: {type: opencv, index_or_path: 0, width: 1920, height: 1080, fps: 30}}" \
+    --robot.type=so100_follower \
+    --robot.port=/dev/ttyACM1 \
+    --robot.cameras="{ front: {type: opencv, index_or_path: /dev/video0, width: 640, height: 480, fps: 30}}" \
     --robot.id=black \
-    --teleop.type=so101_leader \
-    --teleop.port=/dev/tty.usbmodem58760431551 \
+    --teleop.type=so100_leader \
+    --teleop.port=/dev/ttyACM0 \
     --teleop.id=blue \
     --display_data=true
 ```

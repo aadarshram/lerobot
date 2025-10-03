@@ -20,19 +20,22 @@ Example:
 ```shell
 lerobot-record \
     --robot.type=so100_follower \
-    --robot.port=/dev/tty.usbmodem58760431541 \
-    --robot.cameras="{laptop: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}}" \
+    --robot.port=/dev/ttyACM1 \
+    --robot.cameras="{top_phone: {type: opencv, index_or_path: /dev/video0, width: 640, height: 480, fps: 30}}" \
     --robot.id=black \
-    --dataset.repo_id=<my_username>/<my_dataset_name> \
+    --dataset.repo_id=aadarshram/trial \
     --dataset.num_episodes=2 \
     --dataset.single_task="Grab the cube" \
-    --display_data=true
-    # <- Teleop optional if you want to teleoperate to record or in between episodes with a policy \
-    # --teleop.type=so100_leader \
-    # --teleop.port=/dev/tty.usbmodem58760431551 \
-    # --teleop.id=blue \
+    --display_data=true \ 
+    --teleop.type=so100_leader \
+    --teleop.port=/dev/ttyACM0 \
+    --teleop.id=blue \
     # <- Policy optional if you want to record with a policy \
     # --policy.path=${HF_USER}/my_policy \
+
+    Note:
+        # <- Teleop optional if you want to teleoperate to record or in between episodes with a policy \
+
 ```
 
 Example recording with bimanual so100:
@@ -137,9 +140,9 @@ class DatasetRecordConfig:
     # Limit the frames per second.
     fps: int = 30
     # Number of seconds for data recording for each episode.
-    episode_time_s: int | float = 60
+    episode_time_s: int | float = 10
     # Number of seconds for resetting the environment after each episode.
-    reset_time_s: int | float = 60
+    reset_time_s: int | float = 3
     # Number of episodes to record.
     num_episodes: int = 50
     # Encode frames in the dataset into video
