@@ -21,12 +21,12 @@ Example:
 lerobot-record \
     --robot.type=so100_follower \
     --robot.port=/dev/ttyACM1 \
-    --robot.cameras="{top_phone: {type: opencv, index_or_path: /dev/video0, width: 640, height: 480, fps: 30}}" \
+    --robot.cameras="{top_phone: {type: opencv, index_or_path: /dev/video10, width: 640, height: 480, fps: 30}}" \
     --robot.id=black \
     --dataset.repo_id=aadarshram/trial \
     --dataset.num_episodes=2 \
     --dataset.single_task="Grab the cube" \
-    --display_data=true \ 
+    --display_data=true \
     --teleop.type=so100_leader \
     --teleop.port=/dev/ttyACM0 \
     --teleop.id=blue \
@@ -35,6 +35,19 @@ lerobot-record \
 
     Note:
         # <- Teleop optional if you want to teleoperate to record or in between episodes with a policy \
+
+While deployment:
+lerobot-record \
+    --robot.type=so100_follower \
+    --robot.port=/dev/ttyACM0 \
+    --robot.cameras='{top_phone: {type: opencv, index_or_path: /dev/video10, width: 640, height: 480, fps: 30}}' \
+    --robot.id=black \
+    --dataset.repo_id=aadarshram/eval_act_pick_place_tape \
+    --dataset.num_episodes=5 \
+    --dataset.single_task="Pick and Place Tape" \
+    --policy.path=aadarshram/act_pick_place_tape \
+    --display_data=True
+
 
 ```
 
@@ -140,9 +153,9 @@ class DatasetRecordConfig:
     # Limit the frames per second.
     fps: int = 30
     # Number of seconds for data recording for each episode.
-    episode_time_s: int | float = 10
+    episode_time_s: int | float = 20
     # Number of seconds for resetting the environment after each episode.
-    reset_time_s: int | float = 3
+    reset_time_s: int | float = 1
     # Number of episodes to record.
     num_episodes: int = 50
     # Encode frames in the dataset into video
@@ -195,7 +208,7 @@ class RecordConfig:
             cli_overrides = parser.get_cli_overrides("policy")
             self.policy = PreTrainedConfig.from_pretrained(policy_path, cli_overrides=cli_overrides)
             self.policy.pretrained_path = policy_path
-
+        print('Loaded policy config:', self.policy)
         if self.teleop is None and self.policy is None:
             raise ValueError("Choose a policy, a teleoperator or both to control the robot")
 
@@ -280,7 +293,6 @@ def record_loop(
             raise ValueError(
                 "For multi-teleop, the list must contain exactly one KeyboardTeleop and one arm teleoperator. Currently only supported for LeKiwi robot."
             )
-
     # Reset policy and processor if they are provided
     if policy is not None and preprocessor is not None and postprocessor is not None:
         policy.reset()
@@ -342,6 +354,7 @@ def record_loop(
                 "This is likely to happen when resetting the environment without a teleop device."
                 "The robot won't be at its rest position at the start of the next episode."
             )
+            timestamp = time.perf_counter() - start_episode_t
             continue
 
         # Applies a pipeline to the action, default is IdentityProcessor
