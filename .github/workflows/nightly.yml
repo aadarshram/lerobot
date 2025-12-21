@@ -43,6 +43,7 @@ jobs:
     name: Build CPU Docker for Nightly
     runs-on:
       group: aws-general-8-plus
+    if: github.repository == 'huggingface/lerobot'
     outputs:
       image_tag: ${{ env.DOCKER_IMAGE_NAME_CPU }}
     steps:
@@ -77,6 +78,7 @@ jobs:
     name: Build GPU Docker for Nightly
     runs-on:
       group: aws-general-8-plus
+    if: github.repository == 'huggingface/lerobot'
     outputs:
       image_tag: ${{ env.DOCKER_IMAGE_NAME_GPU }}
     steps:
@@ -189,5 +191,6 @@ jobs:
           python -c "import torch; print(f'PyTorch CUDA available: {torch.cuda.is_available()}'); print(f'Number of GPUs: {torch.cuda.device_count()}')"
 
       - name: Run multi-GPU training tests
-        run: pytest tests/training/test_multi_gpu.py -vv --maxfail=3
+      # TODO(Steven): Investigate why motors tests are failing in multi-GPU setup
+        run: pytest tests -vv --maxfail=10 --ignore=tests/motors/
         timeout-minutes: 10
