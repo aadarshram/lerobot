@@ -1,41 +1,25 @@
 """
 Script to generate MetaWorld datasets using expert policies and save them in LeRobot format.
 
-This script generates datasets that match the format of lerobot/metaworld_mt50, including:
-- Task descriptions from metaworld_config.json
-- Proper observation split (state + environment_state)
-- Task IDs for multi-task learning
-- Success tracking and statistics
-
 Usage:
     # Generate a single task dataset
-    python src/lerobot/scripts/generate_datasets.py \
+    python src/lerobot/scripts/generate_MetaWorld_datasets.py \
         --task reach-v2 \
         --repo-id username/metaworld-reach-v2 \
         --num-episodes 50
     
     # Generate MT50 benchmark (all 50 tasks)
-    python src/lerobot/scripts/generate_datasets.py \
+    python src/lerobot/scripts/generate_MetaWorld_datasets.py \
         --benchmark MT50 \
         --repo-id username/metaworld-mt50 \
         --num-episodes 50
     
     # Generate MT10 benchmark
-    python src/lerobot/scripts/generate_datasets.py \
+    python src/lerobot/scripts/generate_MetaWorld_datasets.py \
         --benchmark MT10 \
         --repo-id username/metaworld-mt10 \
         --num-episodes 50 \
         --push-to-hub
-
-Notes:
-    - Task names must match metaworld_config.json (e.g., 'reach-v3', not 'reach-v2')
-    - Standard benchmarks use 50-100 episodes per task
-    - Original lerobot/metaworld_mt50 has 2,500 episodes total (~51 per task)
-    - Success rate varies by task (typically 60-95% for expert policies)
-
-Prerequisites:
-    pip install metaworld gymnasium
-    huggingface-cli login
 """
 
 import argparse
@@ -61,7 +45,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# MetaWorld task groups (v3 naming to match metaworld_config.json)
+# MetaWorld task groups - MT = "Multi-Task"
 MT50_TASKS = [
     "assembly-v3", "basketball-v3", "bin-picking-v3", "box-close-v3", "button-press-topdown-v3",
     "button-press-topdown-wall-v3", "button-press-v3", "button-press-wall-v3", "coffee-button-v3",
@@ -80,7 +64,6 @@ MT10_TASKS = [
     "drawer-close-v3", "button-press-topdown-v3", "peg-insert-side-v3",
     "window-open-v3", "window-close-v3"
 ]
-
 
 def get_metaworld_features(camera_name="corner2", image_size=(480, 480)):
     """Define the features for MetaWorld datasets (matching lerobot/metaworld_mt50 format)."""
@@ -355,20 +338,17 @@ def main():
         help="Generate entire benchmark (MT10 or MT50)",
     )
     
-    # Dataset configuration
     parser.add_argument(
         "--repo-id",
         type=str,
         required=True,
-        help="Repository ID for the dataset (e.g., 'username/metaworld-reach-v2')",
+        help="Repository ID to save the dataset (e.g., 'username/metaworld-reach-v2')",
     )
     parser.add_argument(
         "--num-episodes",
         type=int,
         default=50,
         help="Number of episodes to generate per task (default: 50). "
-             "Standard benchmarks use 50-100 episodes per task. "
-             "The original lerobot/metaworld_mt50 has ~51 episodes per task.",
     )
     parser.add_argument(
         "--fps",
