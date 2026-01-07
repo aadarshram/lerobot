@@ -28,6 +28,11 @@ As described by Physical Intelligence, while AI has achieved remarkable success 
    pip install -e ".[pi]"
    ```
 
+   > [!NOTE]
+   > For lerobot 0.4.0, if you want to install pi tag, you will have to do: `pip install "lerobot[pi]@git+https://github.com/huggingface/lerobot.git"`.
+   >
+   > This will be solved in the next patch release
+
 ## Training Data and Capabilities
 
 π₀ is trained on the largest robot interaction dataset to date, combining three key data sources:
@@ -49,7 +54,7 @@ policy.type=pi0
 For training π₀, you can use the standard LeRobot training script with the appropriate configuration:
 
 ```bash
-python src/lerobot/scripts/train.py \
+python src/lerobot/scripts/lerobot_train.py \
     --dataset.repo_id=your_dataset \
     --policy.type=pi0 \
     --output_dir=./outputs/pi0_training \
@@ -59,6 +64,8 @@ python src/lerobot/scripts/train.py \
     --policy.compile_model=true \
     --policy.gradient_checkpointing=true \
     --policy.dtype=bfloat16 \
+    --policy.freeze_vision_encoder=false \
+    --policy.train_expert_only=false \
     --steps=3000 \
     --policy.device=cuda \
     --batch_size=32
@@ -73,6 +80,15 @@ python src/lerobot/scripts/train.py \
 - **`--policy.pretrained_path=lerobot/pi0_base`**: The base π₀ model you want to finetune, options are:
   - [lerobot/pi0_base](https://huggingface.co/lerobot/pi0_base)
   - [lerobot/pi0_libero](https://huggingface.co/lerobot/pi0_libero) (specifically trained on the Libero dataset)
+
+### Training Parameters Explained
+
+| Parameter               | Default | Description                                 |
+| ----------------------- | ------- | ------------------------------------------- |
+| `freeze_vision_encoder` | `false` | Do not freeze the vision encoder            |
+| `train_expert_only`     | `false` | Do not freeze the VLM, train all parameters |
+
+**💡 Tip**: Setting `train_expert_only=true` freezes the VLM and trains only the action expert and projections, allowing finetuning with reduced memory usage.
 
 ## License
 
