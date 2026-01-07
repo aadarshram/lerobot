@@ -101,8 +101,30 @@ class MetaworldEnv(gym.Env):
 
         self.expert_policy = TASK_POLICY_MAPPING[self.task]()
 
-        if self.obs_type == "state":
-            raise NotImplementedError()
+        if self.obs_type == "state": # (Ad): Added state-based observation in MetaWorld
+            # State-based observation: full raw observation from MetaWorld
+            # Typically contains: [end_effector_pos(3), gripper(1), obj_pos(3), obj_quat(4), ...]
+            # Size varies by task but is usually 39D for most MetaWorld tasks
+            self.observation_space = spaces.Dict(
+                {
+                    "state": spaces.Box(
+                        low=-np.inf,
+                        high=np.inf,
+                        shape=(self._env.observation_space.shape[0],),
+                        dtype=np.float64,
+                    ),
+                    # Also provide parsed components for convenience
+                    "end_effector_pos": spaces.Box(
+                        low=-np.inf, high=np.inf, shape=(3,), dtype=np.float64
+                    ),
+                    "gripper_state": spaces.Box(
+                        low=-np.inf, high=np.inf, shape=(1,), dtype=np.float64
+                    ),
+                    "object_pos": spaces.Box(
+                        low=-np.inf, high=np.inf, shape=(3,), dtype=np.float64
+                    ),
+                }
+            )
         elif self.obs_type == "pixels":
             self.observation_space = spaces.Dict(
                 {
@@ -168,11 +190,24 @@ class MetaworldEnv(gym.Env):
             if self.camera_name == "corner2":
                 # NOTE: The "corner2" camera in MetaWorld environments outputs images with both axes inverted.
                 image = np.flip(image, (0, 1))
-        agent_pos = raw_obs[:4]
+        
+        # Parse standard MetaWorld observation structure:
+        # Indices 0:3 - end-effector XYZ position
+        # Index 3 - gripper open/close state
+        # Indices 4:7 - first object XYZ position
+        # Indices 7:11 - first object orientation (quaternion)
+        # The full observation varies by task but follows this general structure
+        end_effector_pos = raw_obs[:3]
+        gripper_state = raw_obs[3:4]  # Keep as 1D array
+        object_pos = raw_obs[4:7] if len(raw_obs) > 6 else np.zeros(3)
+        
         if self.obs_type == "state":
-            raise NotImplementedError(
-                "'state' obs_type not implemented for MetaWorld. Use pixel modes instead."
-            )
+            obs = {
+                "state": raw_obs.copy(),  # Full raw observation
+                "end_effector_pos": end_effector_pos.copy(),
+                "gripper_state": gripper_state.copy(),
+                "object_pos": object_pos.copy(),
+            }
 
         elif self.obs_type in ("pixels", "pixels_agent_pos"):
             assert image is not None, (
@@ -184,6 +219,7 @@ class MetaworldEnv(gym.Env):
                 obs = {"pixels": image.copy()}
 
             else:  # pixels_agent_pos
+                agent_pos = raw_obs[:4]
                 obs = {
                     "pixels": image.copy(),
                     "agent_pos": agent_pos,
