@@ -22,6 +22,11 @@ lerobot-calibrate \
     --teleop.type=so100_leader \
     --teleop.port=/dev/tty.ACM0 \
     --teleop.id=blue
+
+python src/lerobot/scripts/lerobot_calibrate.py \
+    --robot.type=so101_follower \
+    --robot.port=/dev/ttyACM0 \
+    --robot.id=black
 ```
 """
 

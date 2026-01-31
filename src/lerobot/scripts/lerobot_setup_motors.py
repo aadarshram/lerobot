@@ -21,6 +21,10 @@ Example:
 lerobot-setup-motors \
     --teleop.type=so100_leader \
     --teleop.port=/dev/tty.usbmodem575E0031751
+
+    python src/lerobot/scripts/lerobot_setup_motors.py \
+    --robot.type=so101_follower \
+    --robot.port=/dev/ttyACM0
 ```
 """
 

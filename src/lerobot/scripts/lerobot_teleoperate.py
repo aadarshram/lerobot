@@ -27,6 +27,14 @@ lerobot-teleoperate \
     --teleop.port=/dev/ttyACM0 \
     --teleop.id=blue \
     --display_data=true
+
+    python src/lerobot/scripts/lerobot_teleoperate.py \
+    --robot.type=so101_follower \
+    --robot.port=/dev/ttyACM0 \
+    --robot.id=black \
+    --teleop.type=so101_leader \
+    --teleop.port=/dev/ttyACM1 \
+    --teleop.id=blue
 ```
 
 Example teleoperation with bimanual so100:
