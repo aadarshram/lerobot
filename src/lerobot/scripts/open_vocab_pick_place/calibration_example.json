@@ -1,0 +1,19 @@
+# Example calibration file format
+# This shows the structure for camera calibration data
+# Generate this using camera_utils.py calibration tools
+
+{
+  "camera_matrix": [
+    [640.0, 0.0, 320.0],
+    [0.0, 640.0, 240.0],
+    [0.0, 0.0, 1.0]
+  ],
+  "dist_coeffs": [0.0, 0.0, 0.0, 0.0, 0.0],
+  "camera_to_robot_transform": [
+    [1.0, 0.0, 0.0, 0.0],
+    [0.0, 1.0, 0.0, 0.0],
+    [0.0, 0.0, 1.0, 0.5],
+    [0.0, 0.0, 0.0, 1.0]
+  ],
+  "image_size": [640, 480]
+}
